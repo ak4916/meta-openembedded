@@ -4,12 +4,12 @@ different types of networking. It provides tests for both unidirectional \
 throughput, and end-to-end latency."
 HOMEPAGE = "https://hewlettpackard.github.io/netperf/"
 SECTION = "console/network"
-LICENSE = "netperf"
-LIC_FILES_CHKSUM = "file://COPYING;md5=a0ab17253e7a3f318da85382c7d5d5d6"
+LICENSE = "MIT"
+LIC_FILES_CHKSUM = "file://COPYING;md5=e661ab33a2a71ad6652c178dedf8aaa2"
 
-SRC_URI = "git://github.com/HewlettPackard/netperf.git;nobranch=1"
+SRC_URI = "git://github.com/HewlettPackard/netperf.git;branch=master"
 
-SRCREV = "f46c0319851d85e135e46289fa484b01705af73e"
+SRCREV = "3bc455b23f901dae377ca0a558e1e32aa56b31c4"
 
 S = "${WORKDIR}/git"
 
