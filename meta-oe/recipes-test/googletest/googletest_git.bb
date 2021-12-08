@@ -22,6 +22,10 @@ RDEPENDS_${PN}-dev += "${PN}-staticdev"
 
 BBCLASSEXTEND = "native nativesdk"
 
+LDFLAGS_remove = "-flto"
+CFLAGS_remove = "-flto"
+CXXFLAGS_remove = "-flto"
+
 do_configure_prepend() {
     # explicitly use python3
     # the scripts are already python3 compatible since https://github.com/google/googletest/commit/d404af0d987a9c38cafce82a7e26ec8468c88361 and other fixes like this
