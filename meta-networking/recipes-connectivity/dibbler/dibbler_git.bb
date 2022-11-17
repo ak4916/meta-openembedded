@@ -33,7 +33,7 @@ DEPENDS += "flex-native"
 
 PACKAGES =+ "${PN}-requestor ${PN}-client ${PN}-relay ${PN}-server"
 
-FILES_${PN}-client = "${sbindir}/${PN}-client"
-FILES_${PN}-relay = "${sbindir}/${PN}-relay"
-FILES_${PN}-requestor = "${sbindir}/${PN}-requestor"
-FILES_${PN}-server = "${sbindir}/${PN}-server"
+FILES_${PN}-client = "${sbindir}/dibbler-client"
+FILES_${PN}-relay = "${sbindir}/dibbler-relay"
+FILES_${PN}-requestor = "${sbindir}/dibbler-requestor"
+FILES_${PN}-server = "${sbindir}/dibbler-server"
