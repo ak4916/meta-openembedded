@@ -11,7 +11,7 @@ SECTION = "admin"
 LICENSE = "GPLv2 & GPLv2+ & BSD-3-Clause & LGPLv2.1+"
 LIC_FILES_CHKSUM = "file://${S}/LICENSE;md5=fd57a4b0bc782d7b80fd431f10bbf9d0"
 
-DEPENDS = "bison-native apr gettext-native coreutils-native"
+DEPENDS = "bison-native gettext-native coreutils-native"
 
 SRC_URI = " \
 	git://gitlab.com/apparmor/apparmor.git;protocol=https;branch=apparmor-2.13 \
@@ -30,7 +30,7 @@ S = "${WORKDIR}/git"
 
 PARALLEL_MAKE = ""
 
-inherit pkgconfig autotools-brokensep update-rc.d python3native perlnative ptest cpan systemd distro_features_check
+inherit pkgconfig autotools-brokensep update-rc.d python3native perlnative ptest systemd distro_features_check
 REQUIRED_DISTRO_FEATURES = "apparmor"
 
 #PACKAGECONFIG ??= "python perl aa-decode"
@@ -64,7 +64,9 @@ do_compile () {
 
 	oe_runmake -C ${B}/libraries/libapparmor
         oe_runmake -C ${B}/binutils
-        oe_runmake -C ${B}/utils
+        if ${@bb.utils.contains('PACKAGECONFIG','python','true','false', d)}; then
+                oe_runmake -C ${B}/utils
+        fi
         oe_runmake -C ${B}/parser
         oe_runmake -C ${B}/profiles
 
@@ -86,7 +88,9 @@ do_install () {
 	install -d ${D}${sysconfdir}/apparmor.d/cache        
 	oe_runmake -C ${B}/libraries/libapparmor DESTDIR="${D}" install
 	oe_runmake -C ${B}/binutils DESTDIR="${D}" install
-	oe_runmake -C ${B}/utils DESTDIR="${D}" install
+	if ${@bb.utils.contains('PACKAGECONFIG','python','true','false', d)}; then
+		oe_runmake -C ${B}/utils DESTDIR="${D}" install
+	fi
 	oe_runmake -C ${B}/parser DESTDIR="${D}" install
 #	oe_runmake -C ${B}/profiles DESTDIR="${D}" install
 
@@ -108,8 +112,10 @@ do_install () {
 	fi
 
 	# aa-easyprof is installed by python-tools-setup.py, fix it up
-	sed -i -e 's:/usr/bin/env.*:/usr/bin/python3:' ${D}${bindir}/aa-easyprof
-	chmod 0755 ${D}${bindir}/aa-easyprof
+	if ${@bb.utils.contains('PACKAGECONFIG','python','true','false', d)}; then
+		sed -i -e 's:/usr/bin/env.*:/usr/bin/python3:' ${D}${bindir}/aa-easyprof
+		chmod 0755 ${D}${bindir}/aa-easyprof
+	fi
 
 	install ${WORKDIR}/apparmor ${D}/${INIT_D_DIR}/apparmor
 	install ${WORKDIR}/functions ${D}/lib/apparmor
