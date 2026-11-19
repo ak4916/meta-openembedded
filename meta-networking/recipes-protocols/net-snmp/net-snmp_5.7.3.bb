@@ -1,11 +1,10 @@
 SUMMARY = "Various tools relating to the Simple Network Management Protocol"
 HOMEPAGE = "http://www.net-snmp.org/"
-SECTION = "net"
 LICENSE = "BSD"
 
 LIC_FILES_CHKSUM = "file://README;beginline=3;endline=8;md5=7f7f00ba639ac8e8deb5a622ea24634e"
 
-DEPENDS = "openssl libnl pciutils"
+DEPENDS = "openssl libnl"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/net-snmp/net-snmp-${PV}.zip \
            file://init \
@@ -91,7 +90,7 @@ do_install_ptest() {
     for i in ${S}/dist ${S}/include ${B}/include ${S}/mibs ${S}/configure \
         ${B}/net-snmp-config ${S}/testing; do
         if [ -e "$i" ]; then
-            cp -R --no-dereference --preserve=mode,links -v "$i" ${D}${PTEST_PATH}
+            cp -a "$i" ${D}${PTEST_PATH}
         fi
     done
     echo `autoconf -V|awk '/autoconf/{print $NF}'` > ${D}${PTEST_PATH}/dist/autoconf-version
@@ -146,11 +145,11 @@ FILES_${PN}-dev += "${bindir}/mib2c ${bindir}/mib2c-update"
 CONFFILES_${PN}-server-snmpd = "${sysconfdir}/snmp/snmpd.conf"
 CONFFILES_${PN}-server-snmptrapd = "${sysconfdir}/snmp/snmptrapd.conf"
 
-INITSCRIPT_PACKAGES = "${PN}-server"
-INITSCRIPT_NAME_${PN}-server = "snmpd"
-INITSCRIPT_PARAMS_${PN}-server = "defaults"
+INITSCRIPT_PACKAGES = "${PN}-server-snmpd"
+INITSCRIPT_NAME_${PN}-server-snmpd = "snmpd"
+INITSCRIPT_PARAMS_${PN}-server-snmpd = "start 90 2 3 4 5 . stop 60 0 1 6 ."
 
-EXTRA_OECONF += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '--with-systemd', '--without-systemd', d)}"
+EXTRA_OECONF += "${@base_contains('DISTRO_FEATURES', 'systemd', '--with-systemd', '--without-systemd', d)}"
 
 SYSTEMD_PACKAGES = "${PN}-server-snmpd \
                     ${PN}-server-snmptrapd"
@@ -182,3 +181,4 @@ RREPLACES_${PN}-server-snmptrapd += "${PN}-server-snmptrapd-systemd"
 RCONFLICTS_${PN}-server-snmptrapd += "${PN}-server-snmptrapd-systemd"
 
 LEAD_SONAME = "libnetsnmp.so"
+
